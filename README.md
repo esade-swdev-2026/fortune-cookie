@@ -1,11 +1,6 @@
-# app
+# fortune-cookie
 
-> **First thing: rename `app` to your project.** It appears in this file, in
-> `pyproject.toml` (`name`, `[project.scripts]`, `[tool.hatch.build.targets.wheel]`),
-> in the folder `src/app/`, and in the imports under `tests/`. Session 5's lab walks
-> you through it.
-
-One or two sentences on what your program does and who it is for.
+Fortune Cookie is a command-line utility for students and terminal users who want to instantly generate random fortunes and lucky numbers.
 
 ## Install
 
@@ -21,9 +16,7 @@ and CI resolve the same ones. When you change a dependency in `pyproject.toml`, 
 ## Run
 
 ```
-uv run app --help
-uv run app greet World
-uv run app greet World --count 3
+uv run fortune-cookie get career --lucky-number 5
 ```
 
 ## Develop
@@ -43,7 +36,7 @@ If they pass here, CI passes.
 ```
 src/app/          your package — importable, installable, not just a script
   cli.py          the typer command-line interface
-  __main__.py     lets `python -m app` work
+  __main__.py     lets `python -m fortune_cookie` work
 tests/            pytest tests, mirroring src/
 pyproject.toml    dependencies and tool configuration — the single source of truth
 ```
