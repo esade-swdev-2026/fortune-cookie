@@ -40,3 +40,6 @@ src/app/          your package — importable, installable, not just a script
 tests/            pytest tests, mirroring src/
 pyproject.toml    dependencies and tool configuration — the single source of truth
 ```
+
+## I/O (shell)
+All I/O lives in `src/fortune_cookie/cli.py`: `typer.echo` and `raise typer.Exit` in the CLI command. No file reads/writes, `print` or `sys.exit` anywhere else.
