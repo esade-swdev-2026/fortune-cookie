@@ -47,3 +47,6 @@ src/app/          your package — importable, installable, not just a script
 tests/            pytest tests, mirroring src/
 pyproject.toml    dependencies and tool configuration — the single source of truth
 ```
+
+## I/O (shell)
+All I/O lives in `src/app/cli.py`: `typer.echo` (lines 9, 12, 17) and `raise typer.Exit` (line 10). No file reads/writes, `print` or `sys.exit` elsewhere.
