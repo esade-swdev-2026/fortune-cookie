@@ -17,6 +17,10 @@ and CI resolve the same ones. When you change a dependency in `pyproject.toml`, 
 
 ```
 uv run fortune-cookie get career --lucky-number 5
+uv run fortune-cookie count
+uv run fortune-cookie many 3
+uv run fortune-cookie add "Smile today" motivation
+uv run fortune-cookie last
 ```
 
 ## Develop
@@ -34,7 +38,8 @@ If they pass here, CI passes.
 ## Layout
 
 ```
-src/app/          your package — importable, installable, not just a script
+src/fortune_cookie/   your package — importable, installable, not just a script
+  fortune_rules.py  the pure logic: no files, no printing
   cli.py          the typer command-line interface
   __main__.py     lets `python -m fortune_cookie` work
 tests/            pytest tests, mirroring src/
@@ -42,4 +47,4 @@ pyproject.toml    dependencies and tool configuration — the single source of t
 ```
 
 ## I/O (shell)
-All I/O lives in `src/fortune_cookie/cli.py`: `typer.echo` and `raise typer.Exit` in the CLI command. No file reads/writes, `print` or `sys.exit` anywhere else.
+All I/O lives in `src/fortune_cookie/cli.py`: `typer.echo`, `raise typer.Exit`, and the `load_*` and `save_*` functions that read and write the history, last fortune and custom fortunes files. No I/O anywhere else.

@@ -1,6 +1,6 @@
 import pytest
 
-from fortune_cookie.core import (
+from fortune_cookie.fortune_rules import (
     Fortune,
     add_message,
     count_messages,
@@ -9,6 +9,7 @@ from fortune_cookie.core import (
     get_fresh_fortune,
     get_many,
     lucky_numbers,
+    reset_when_all_seen,
 )
 
 LOVE = Fortune(text="Love is coming", category="love")
@@ -52,16 +53,44 @@ def test_fresh_fortune_skips_seen_messages(messages: list[Fortune]) -> None:
     assert get_fresh_fortune(messages, seen) == CAREER_2
 
 
-def test_fresh_fortune_is_added_to_seen(messages: list[Fortune]) -> None:
-    seen: set[str] = set()
-    chosen = get_fresh_fortune(messages, seen)
-    assert seen == {chosen.text}
+def test_fresh_fortune_does_not_change_seen(messages: list[Fortune]) -> None:
+    seen = {LOVE.text}
+    get_fresh_fortune(messages, seen)
+    assert seen == {LOVE.text}
 
 
 def test_fresh_fortune_raises_when_everything_was_seen(messages: list[Fortune]) -> None:
     seen = {message.text for message in messages}
     with pytest.raises(ValueError, match="No unseen"):
         get_fresh_fortune(messages, seen)
+
+
+def test_reset_keeps_seen_when_some_are_unseen(messages: list[Fortune]) -> None:
+    seen = {CAREER.text}
+    assert reset_when_all_seen(messages, seen, last_message=CAREER.text) == {CAREER.text}
+
+
+def test_reset_forgets_the_pool_when_all_were_seen() -> None:
+    seen = {LOVE.text, CAREER.text, CAREER_2.text}
+    result = reset_when_all_seen([CAREER, CAREER_2], seen, last_message=None)
+    assert result == {LOVE.text}
+
+
+def test_reset_keeps_the_last_fortune_so_it_does_not_repeat_next() -> None:
+    seen = {CAREER.text, CAREER_2.text}
+    result = reset_when_all_seen([CAREER, CAREER_2], seen, last_message=CAREER_2.text)
+    assert result == {CAREER_2.text}
+
+
+def test_reset_with_a_single_fortune_allows_it_again() -> None:
+    result = reset_when_all_seen([LOVE], {LOVE.text}, last_message=LOVE.text)
+    assert result == set()
+
+
+def test_reset_does_not_change_the_original_set(messages: list[Fortune]) -> None:
+    seen = {message.text for message in messages}
+    reset_when_all_seen(messages, seen, last_message=None)
+    assert len(seen) == 3
 
 
 def test_lucky_numbers_default_is_six_unique_numbers_between_1_and_49() -> None:
