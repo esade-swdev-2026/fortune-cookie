@@ -21,7 +21,10 @@ def main() -> None:
 
 
 @app.command()
-def get(category: str) -> None:
+def get(category: str, lucky_number: int = 7) -> None:
+    if lucky_number < 1:
+        typer.echo("Lucky number must be at least 1", err=True)
+        raise typer.Exit(code=1)
     try:
         matching_messages = filter_by_category(messages, category)
         selected_message = get_fortune(matching_messages)
@@ -29,7 +32,7 @@ def get(category: str) -> None:
         typer.echo(str(error), err=True)
         raise typer.Exit(code=1) from error
 
-    typer.echo(f"Your fortune: {selected_message['text']}")
+    typer.echo(f"Your fortune for [{category}]: {selected_message['text']}")
     generated_lucky_numbers = lucky_numbers()
     typer.echo(f"Your lucky numbers today are {generated_lucky_numbers}!")
 
