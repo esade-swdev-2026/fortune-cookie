@@ -1,6 +1,10 @@
 import random
 from dataclasses import dataclass
 
+LOWEST_LUCKY_NUMBER = 1
+HIGHEST_LUCKY_NUMBER = 49
+DEFAULT_LUCKY_NUMBER_COUNT = 6
+
 
 @dataclass(frozen=True)
 class Fortune:
@@ -27,16 +31,33 @@ def get_fresh_fortune(messages: list[Fortune], seen: set[str]) -> Fortune:
     if not available_messages:
         raise ValueError("No unseen fortunes available")
 
-    selected_message = random.choice(available_messages)
-    seen.add(selected_message.text)
-    return selected_message
+    return random.choice(available_messages)
 
 
-def lucky_numbers(number_of_lucky_numbers: int = 6) -> list[int]:
-    if number_of_lucky_numbers < 1 or number_of_lucky_numbers > 49:
-        raise ValueError("Number of lucky numbers must be between 1 and 49")
+def reset_when_all_seen(
+    messages: list[Fortune], seen: set[str], last_message: str | None
+) -> set[str]:
+    if not all(message.text in seen for message in messages):
+        return set(seen)
 
-    return random.sample(range(1, 50), number_of_lucky_numbers)
+    remaining = seen - {message.text for message in messages}
+
+    if last_message is not None and any(message.text != last_message for message in messages):
+        remaining.add(last_message)
+
+    return remaining
+
+
+def lucky_numbers(number_of_lucky_numbers: int = DEFAULT_LUCKY_NUMBER_COUNT) -> list[int]:
+    if not LOWEST_LUCKY_NUMBER <= number_of_lucky_numbers <= HIGHEST_LUCKY_NUMBER:
+        raise ValueError(
+            f"Number of lucky numbers must be between {LOWEST_LUCKY_NUMBER} "
+            f"and {HIGHEST_LUCKY_NUMBER}"
+        )
+
+    return random.sample(
+        range(LOWEST_LUCKY_NUMBER, HIGHEST_LUCKY_NUMBER + 1), number_of_lucky_numbers
+    )
 
 
 def filter_by_category(messages: list[Fortune], category: str) -> list[Fortune]:

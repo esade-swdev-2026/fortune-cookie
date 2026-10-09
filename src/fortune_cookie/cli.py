@@ -4,7 +4,7 @@ from pathlib import Path
 
 import typer
 
-from fortune_cookie.core import (
+from fortune_cookie.fortune_rules import (
     Fortune,
     add_message,
     count_messages,
@@ -12,6 +12,7 @@ from fortune_cookie.core import (
     get_fresh_fortune,
     get_many,
     lucky_numbers,
+    reset_when_all_seen,
 )
 
 history_file = Path.home() / ".fortune_cookie_history.json"
@@ -43,6 +44,13 @@ def save_history(seen_messages: set[str]) -> None:
         json.dump(sorted(seen_messages), file)
 
 
+def load_last_message() -> str | None:
+    if not last_message_file.exists():
+        return None
+
+    return last_message_file.read_text(encoding="utf-8")
+
+
 def save_last_message(message: str) -> None:
     last_message_file.write_text(message, encoding="utf-8")
 
@@ -70,7 +78,7 @@ app = typer.Typer(
 
 @app.callback()
 def main() -> None:
-    """Fortune Cookie CLI."""
+    pass
 
 
 @app.command()
@@ -81,30 +89,15 @@ def get(category: str, lucky_number: int = 7) -> None:
     try:
         all_messages = messages + load_custom_messages()
         matching_messages = filter_by_category(all_messages, category)
-        seen_messages = load_history()
-
-        if all(message.text in seen_messages for message in matching_messages):
-            last_message = (
-                last_message_file.read_text(encoding="utf-8")
-                if last_message_file.exists()
-                else None
-            )
-
-            seen_messages.difference_update(message.text for message in matching_messages)
-
-            if last_message is not None and any(
-                message.text != last_message for message in matching_messages
-            ):
-                seen_messages.add(last_message)
-
+        seen_messages = reset_when_all_seen(matching_messages, load_history(), load_last_message())
         selected_message = get_fresh_fortune(matching_messages, seen_messages)
-        save_history(seen_messages)
     except ValueError as error:
         typer.echo(str(error), err=True)
         raise typer.Exit(code=1) from error
 
-    typer.echo(f"Your fortune for [{category}]: {selected_message.text}")
+    save_history(seen_messages | {selected_message.text})
     save_last_message(selected_message.text)
+    typer.echo(f"Your fortune for [{category}]: {selected_message.text}")
     generated_lucky_numbers = lucky_numbers()
     typer.echo(f"Your lucky numbers today are {generated_lucky_numbers}!")
 
@@ -144,11 +137,12 @@ def add(text: str, category: str) -> None:
 
 @app.command()
 def last() -> None:
-    if not last_message_file.exists():
+    last_message = load_last_message()
+
+    if last_message is None:
         typer.echo("No fortune has been displayed yet.")
         return
 
-    last_message = last_message_file.read_text(encoding="utf-8")
     typer.echo(f"Your last fortune: {last_message}")
 
 
