@@ -21,18 +21,12 @@ def messages() -> list[Fortune]:
     return [LOVE, CAREER, CAREER_2]
 
 
-# --- count_messages ---
-
-
 def test_count_messages_returns_number_of_fortunes(messages: list[Fortune]) -> None:
     assert count_messages(messages) == 3
 
 
 def test_count_of_empty_list_is_zero() -> None:
     assert count_messages([]) == 0
-
-
-# --- get_fortune ---
 
 
 def test_get_fortune_returns_one_of_the_messages(messages: list[Fortune]) -> None:
@@ -44,9 +38,6 @@ def test_get_fortune_from_empty_list_raises() -> None:
         get_fortune([])
 
 
-# --- filter_by_category ---
-
-
 def test_filter_keeps_only_the_chosen_category(messages: list[Fortune]) -> None:
     assert filter_by_category(messages, "career") == [CAREER, CAREER_2]
 
@@ -54,9 +45,6 @@ def test_filter_keeps_only_the_chosen_category(messages: list[Fortune]) -> None:
 def test_filter_unknown_category_raises(messages: list[Fortune]) -> None:
     with pytest.raises(ValueError, match="does not exist"):
         filter_by_category(messages, "health")
-
-
-# --- get_fresh_fortune ---
 
 
 def test_fresh_fortune_skips_seen_messages(messages: list[Fortune]) -> None:
@@ -74,9 +62,6 @@ def test_fresh_fortune_raises_when_everything_was_seen(messages: list[Fortune]) 
     seen = {message.text for message in messages}
     with pytest.raises(ValueError, match="No unseen"):
         get_fresh_fortune(messages, seen)
-
-
-# --- lucky_numbers ---
 
 
 def test_lucky_numbers_default_is_six_unique_numbers_between_1_and_49() -> None:
@@ -97,9 +82,6 @@ def test_lucky_numbers_outside_1_to_49_raises(amount: int) -> None:
         lucky_numbers(amount)
 
 
-# --- add_message ---
-
-
 def test_add_message_appends_a_cleaned_fortune(messages: list[Fortune]) -> None:
     result = add_message(messages, "  Smile today  ", " motivation ")
     assert result[-1] == Fortune(text="Smile today", category="motivation")
@@ -115,9 +97,6 @@ def test_add_message_does_not_change_the_original_list(messages: list[Fortune]) 
 def test_add_message_with_blank_text_or_category_raises(text: str, category: str) -> None:
     with pytest.raises(ValueError):
         add_message([], text, category)
-
-
-# --- get_many ---
 
 
 def test_get_many_returns_that_many_different_messages(messages: list[Fortune]) -> None:

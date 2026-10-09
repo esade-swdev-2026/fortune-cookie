@@ -11,7 +11,6 @@ runner = CliRunner()
 
 @pytest.fixture(autouse=True)
 def files_in_tmp_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """Point the CLI's files at a temporary folder so tests never touch the real home."""
     monkeypatch.setattr(cli, "history_file", tmp_path / "history.json")
     monkeypatch.setattr(cli, "last_message_file", tmp_path / "last.txt")
     monkeypatch.setattr(cli, "custom_messages_file", tmp_path / "messages.json")
