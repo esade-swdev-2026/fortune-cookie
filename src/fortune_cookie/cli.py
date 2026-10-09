@@ -34,6 +34,5 @@ def get(category: str) -> None:
     typer.echo(f"Your lucky numbers today are {generated_lucky_numbers}!")
 
 
-
 if __name__ == "__main__":
     app()
