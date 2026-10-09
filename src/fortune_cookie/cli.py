@@ -17,6 +17,7 @@ messages = [
 
 last_message_file = Path.home() / ".fortune_cookie_last.txt"
 
+
 def load_history() -> set[str]:
     if not history_file.exists():
         return set()
@@ -31,8 +32,10 @@ def save_history(seen_messages: set[str]) -> None:
     with open(history_file, "w", encoding="utf-8") as file:
         json.dump(sorted(seen_messages), file)
 
+
 def save_last_message(message: str) -> None:
     last_message_file.write_text(message, encoding="utf-8")
+
 
 app = typer.Typer(
     help="Fortune Cookie is a lightweight command-line utility to generate personalized fortunes."
@@ -67,6 +70,7 @@ def get(category: str, lucky_number: int = 7) -> None:
     generated_lucky_numbers = lucky_numbers()
     typer.echo(f"Your lucky numbers today are {generated_lucky_numbers}!")
 
+
 @app.command()
 def last() -> None:
     if not last_message_file.exists():
@@ -75,6 +79,7 @@ def last() -> None:
 
     last_message = last_message_file.read_text(encoding="utf-8")
     typer.echo(f"Your last fortune: {last_message}")
+
 
 if __name__ == "__main__":
     app()
