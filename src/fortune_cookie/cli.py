@@ -1,4 +1,3 @@
-from pathlib import Path
 import json
 from pathlib import Path
 
@@ -76,6 +75,6 @@ def last() -> None:
 
     last_message = last_message_file.read_text(encoding="utf-8")
     typer.echo(f"Your last fortune: {last_message}")
-    
+
 if __name__ == "__main__":
     app()
