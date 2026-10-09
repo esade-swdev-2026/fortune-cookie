@@ -19,8 +19,7 @@ def get_fresh_fortune(messages: list[dict[str, str]], seen: set[str]) -> dict[st
     available_messages = [message for message in messages if message["text"] not in seen]
 
     if not available_messages:
-        seen.clear()
-        available_messages = messages
+        raise ValueError("No unseen fortunes available")
 
     selected_message = random.choice(available_messages)
     seen.add(selected_message["text"])
