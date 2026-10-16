@@ -47,4 +47,4 @@ pyproject.toml    dependencies and tool configuration — the single source of t
 ```
 
 ## I/O (shell)
-All I/O lives in `src/fortune_cookie/cli.py`: `typer.echo`, `raise typer.Exit`, and the `load_*` and `save_*` functions that read and write the history, last fortune and custom fortunes files. No I/O anywhere else.
+All file I/O lives in `src/fortune_cookie/file_storage.py`. The `cli.py` module handles the Typer command-line interface, including `typer.echo` and `raise typer.Exit`, and calls the `load_*` and `save_*` functions from `file_storage.py` to read and write the history, last fortune, and custom fortunes files. No I/O anywhere else.

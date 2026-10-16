@@ -1,9 +1,13 @@
-import json
-from dataclasses import asdict
-from pathlib import Path
-
 import typer
 
+from fortune_cookie.file_storage import (
+    load_custom_messages,
+    load_history,
+    load_last_message,
+    save_custom_messages,
+    save_history,
+    save_last_message,
+)
 from fortune_cookie.fortune_rules import (
     Fortune,
     add_message,
@@ -15,8 +19,6 @@ from fortune_cookie.fortune_rules import (
     reset_when_all_seen,
 )
 
-history_file = Path.home() / ".fortune_cookie_history.json"
-
 messages = [
     Fortune(text="Believe in yourself", category="motivation"),
     Fortune(text="Love is coming", category="love"),
@@ -24,51 +26,6 @@ messages = [
     Fortune(text="Great opportunities await you", category="career"),
     Fortune(text="Trust your instincts", category="motivation"),
 ]
-
-last_message_file = Path.home() / ".fortune_cookie_last.txt"
-custom_messages_file = Path.home() / ".fortune_cookie_messages.json"
-
-
-def load_history() -> set[str]:
-    if not history_file.exists():
-        return set()
-
-    with open(history_file, encoding="utf-8") as file:
-        saved_messages = json.load(file)
-
-    return set(saved_messages)
-
-
-def save_history(seen_messages: set[str]) -> None:
-    with open(history_file, "w", encoding="utf-8") as file:
-        json.dump(sorted(seen_messages), file)
-
-
-def load_last_message() -> str | None:
-    if not last_message_file.exists():
-        return None
-
-    return last_message_file.read_text(encoding="utf-8")
-
-
-def save_last_message(message: str) -> None:
-    last_message_file.write_text(message, encoding="utf-8")
-
-
-def save_custom_messages(custom_messages: list[Fortune]) -> None:
-    saved_messages = [asdict(message) for message in custom_messages]
-    custom_messages_file.write_text(
-        json.dumps(saved_messages, indent=4),
-        encoding="utf-8",
-    )
-
-
-def load_custom_messages() -> list[Fortune]:
-    if not custom_messages_file.exists():
-        return []
-
-    saved_messages = json.loads(custom_messages_file.read_text(encoding="utf-8"))
-    return [Fortune(**message) for message in saved_messages]
 
 
 app = typer.Typer(
