@@ -38,12 +38,13 @@ If they pass here, CI passes.
 ## Layout
 
 ```
-src/fortune_cookie/   your package — importable, installable, not just a script
-  fortune_rules.py  the pure logic: no files, no printing
-  cli.py          the typer command-line interface
-  __main__.py     lets `python -m fortune_cookie` work
-tests/            pytest tests, mirroring src/
-pyproject.toml    dependencies and tool configuration — the single source of truth
+src/fortune_cookie/   the application package
+  fortune_rules.py    the pure logic: no files, no printing
+  file_storage.py     all file I/O: load_* and save_* for history, last and custom fortunes
+  cli.py              the typer command-line interface
+  __main__.py         lets `python -m fortune_cookie` work
+tests/                pytest tests, mirroring src/
+pyproject.toml        dependencies and tool configuration
 ```
 
 ## I/O (shell)
