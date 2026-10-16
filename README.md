@@ -23,6 +23,10 @@ uv run fortune-cookie add "Smile today" motivation
 uv run fortune-cookie last
 ```
 
+`--lucky-number` sets how many lucky numbers are printed (1 to 49, default 6).
+
+Data is saved in your home folder: `~/.fortune_cookie_history.json` (fortunes already shown), `~/.fortune_cookie_last.txt` (the last fortune) and `~/.fortune_cookie_messages.json` (fortunes you add).
+
 ## Develop
 
 ```
