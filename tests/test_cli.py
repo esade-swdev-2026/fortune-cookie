@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 import pytest
@@ -24,4 +25,16 @@ def test_get_fortune_success() -> None:
 
 def test_get_fortune_invalid_number() -> None:
     result = runner.invoke(app, ["get", "career", "--lucky-number", "0"])
+    assert result.exit_code == 1
+
+
+def test_get_fortune_prints_the_requested_amount_of_lucky_numbers() -> None:
+    result = runner.invoke(app, ["get", "career", "--lucky-number", "3"])
+    assert result.exit_code == 0
+    lucky_numbers_found = re.findall(r"\d+", result.stdout.splitlines()[-1])
+    assert len(lucky_numbers_found) == 3
+
+
+def test_get_fortune_rejects_more_than_49_lucky_numbers() -> None:
+    result = runner.invoke(app, ["get", "career", "--lucky-number", "50"])
     assert result.exit_code == 1

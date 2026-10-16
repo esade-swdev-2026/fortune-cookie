@@ -1,3 +1,5 @@
+from typing import Annotated
+
 import typer
 
 from fortune_cookie.file_storage import (
@@ -9,6 +11,7 @@ from fortune_cookie.file_storage import (
     save_last_message,
 )
 from fortune_cookie.fortune_rules import (
+    DEFAULT_LUCKY_NUMBER_COUNT,
     Fortune,
     add_message,
     count_messages,
@@ -39,15 +42,16 @@ def main() -> None:
 
 
 @app.command()
-def get(category: str, lucky_number: int = 7) -> None:
-    if lucky_number < 1:
-        typer.echo("Lucky number must be at least 1", err=True)
-        raise typer.Exit(code=1)
+def get(
+    category: str,
+    lucky_count: Annotated[int, typer.Option("--lucky-number")] = DEFAULT_LUCKY_NUMBER_COUNT,
+) -> None:
     try:
         all_messages = messages + load_custom_messages()
         matching_messages = filter_by_category(all_messages, category)
         seen_messages = reset_when_all_seen(matching_messages, load_history(), load_last_message())
         selected_message = get_fresh_fortune(matching_messages, seen_messages)
+        generated_lucky_numbers = lucky_numbers(lucky_count)
     except ValueError as error:
         typer.echo(str(error), err=True)
         raise typer.Exit(code=1) from error
@@ -55,7 +59,6 @@ def get(category: str, lucky_number: int = 7) -> None:
     save_history(seen_messages | {selected_message.text})
     save_last_message(selected_message.text)
     typer.echo(f"Your fortune for [{category}]: {selected_message.text}")
-    generated_lucky_numbers = lucky_numbers()
     typer.echo(f"Your lucky numbers today are {generated_lucky_numbers}!")
 
 
