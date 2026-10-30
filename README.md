@@ -53,3 +53,10 @@ pyproject.toml        dependencies and tool configuration
 
 ## I/O (shell)
 All file I/O lives in `src/fortune_cookie/file_storage.py`. The `cli.py` module handles the Typer command-line interface, including `typer.echo` and `raise typer.Exit`, and calls the `load_*` and `save_*` functions from `file_storage.py` to read and write the history, last fortune, and custom fortunes files. No I/O anywhere else.
+
+## Commands
+
+| Command | What it does |
+|---|---|
+| `get <category>` | Shows a random fortune from that category, with your lucky numbers. `--lucky-number N` chooses how many numbers (1 to 49, default 6). |
+| `count` | Shows how many fortunes there are in total. |
