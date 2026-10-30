@@ -86,3 +86,7 @@ def get_many(messages: list[Fortune], number_of_messages: int) -> list[Fortune]:
         raise ValueError("Number of messages must be between 1 and the total available")
 
     return random.sample(messages, number_of_messages)
+
+
+def list_categories(messages: list[Fortune]) -> list[str]:
+    return sorted({message.category for message in messages})
