@@ -12,3 +12,12 @@ Commit messages
 Start with a capitalised verb in the imperative: Add, Fix, Remove, Update or Rename.
 Say what the commit does, so it still makes sense in a month.
 If the reason is not obvious, add a blank line and a short explanation.
+
+Pull requests
+
+Before pushing, run the four checks from the README and make sure they all pass.
+Push your branch and open a pull request on GitHub with a title that says what it does.
+Wait for the check to turn green before merging.
+If GitHub says there are conflicts, stop and tell the group.
+Never use git push --force.
+After merging, delete the branch.
