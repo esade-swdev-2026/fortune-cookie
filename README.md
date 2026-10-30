@@ -60,3 +60,6 @@ All file I/O lives in `src/fortune_cookie/file_storage.py`. The `cli.py` module 
 |---|---|
 | `get <category>` | Shows a random fortune from that category, with your lucky numbers. `--lucky-number N` chooses how many numbers (1 to 49, default 6). |
 | `count` | Shows how many fortunes there are in total. |
+| `many <n>` | Shows `n` random fortunes at once, including the ones you added. |
+| `add "<text>" <category>` | Saves your own fortune in that category, so it can come up later. |
+| `last` | Shows the last fortune you got, or tells you none has been shown yet. |
