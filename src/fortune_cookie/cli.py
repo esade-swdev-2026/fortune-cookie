@@ -18,6 +18,7 @@ from fortune_cookie.fortune_rules import (
     filter_by_category,
     get_fresh_fortune,
     get_many,
+    list_categories,
     lucky_numbers,
     reset_when_all_seen,
 )
@@ -93,6 +94,14 @@ def add(text: str, category: str) -> None:
         raise typer.Exit(code=1) from error
 
     typer.echo(f"Fortune added: {text}")
+
+
+@app.command()
+def categories() -> None:
+    all_messages = messages + load_custom_messages()
+
+    for category in list_categories(all_messages):
+        typer.echo(category)
 
 
 @app.command()

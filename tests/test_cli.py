@@ -38,3 +38,16 @@ def test_get_fortune_prints_the_requested_amount_of_lucky_numbers() -> None:
 def test_get_fortune_rejects_more_than_49_lucky_numbers() -> None:
     result = runner.invoke(app, ["get", "career", "--lucky-number", "50"])
     assert result.exit_code == 1
+
+
+def test_categories_lists_each_category_once_in_order() -> None:
+    result = runner.invoke(app, ["categories"])
+    assert result.exit_code == 0
+    assert result.stdout.splitlines() == ["career", "love", "motivation"]
+
+
+def test_categories_includes_categories_from_added_fortunes() -> None:
+    runner.invoke(app, ["add", "A journey begins", "travel"])
+    result = runner.invoke(app, ["categories"])
+    assert result.exit_code == 0
+    assert "travel" in result.stdout.splitlines()
