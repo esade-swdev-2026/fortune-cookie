@@ -52,3 +52,14 @@ def test_categories_includes_categories_from_added_fortunes() -> None:
     result = runner.invoke(app, ["categories"])
     assert result.exit_code == 0
     assert "travel" in result.stdout.splitlines()
+
+
+def test_categories_fails_on_corrupted_json(monkeypatch: pytest.MonkeyPatch) -> None:
+    def mock_load_custom_messages() -> list[dict[str, str]]:
+        raise ValueError("Invalid JSON format")
+
+    monkeypatch.setattr("fortune_cookie.cli.load_custom_messages", mock_load_custom_messages)
+
+    result = runner.invoke(app, ["categories"])
+    assert result.exit_code == 1
+    assert "Could not load categories: Invalid JSON format" in result.output

@@ -98,7 +98,11 @@ def add(text: str, category: str) -> None:
 
 @app.command()
 def categories() -> None:
-    all_messages = messages + load_custom_messages()
+    try:
+        all_messages = messages + load_custom_messages()
+    except ValueError as error:
+        typer.echo(f"Could not load categories: {error}", err=True)
+        raise typer.Exit(code=1) from None
 
     for category in list_categories(all_messages):
         typer.echo(category)
