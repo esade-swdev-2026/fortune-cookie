@@ -77,7 +77,7 @@ def add_message(messages: list[Fortune], text: str, category: str) -> list[Fortu
     if not category.strip():
         raise ValueError("Category cannot be empty")
 
-    if any(message.text == text.strip() for message in messages):
+    if any(message.text.lower() == text.strip().lower() for message in messages):
         raise ValueError("This fortune already exists")
 
     new_message = Fortune(text=text.strip(), category=category.strip())

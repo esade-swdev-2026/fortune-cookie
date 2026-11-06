@@ -151,3 +151,9 @@ def test_add_message_ignores_surrounding_spaces_when_checking_duplicates() -> No
     messages = [Fortune(text="Believe in yourself", category="motivation")]
     with pytest.raises(ValueError, match="already exists"):
         add_message(messages, "  Believe in yourself  ", "motivation")
+
+
+def test_add_message_ignores_case_when_checking_duplicates() -> None:
+    messages = [Fortune(text="Believe in yourself", category="motivation")]
+    with pytest.raises(ValueError, match="already exists"):
+        add_message(messages, "believe in yourself", "motivation")
