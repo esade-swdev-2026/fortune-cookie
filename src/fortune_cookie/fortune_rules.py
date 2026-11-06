@@ -89,4 +89,4 @@ def get_many(messages: list[Fortune], number_of_messages: int) -> list[Fortune]:
 
 
 def list_categories(messages: list[Fortune]) -> list[str]:
-    return sorted({message.category for message in messages})
+    return sorted({message.category for message in messages}, key=str.lower)

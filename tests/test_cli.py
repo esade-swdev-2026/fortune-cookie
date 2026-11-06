@@ -47,7 +47,8 @@ def test_categories_lists_each_category_once_in_order() -> None:
 
 
 def test_categories_includes_categories_from_added_fortunes() -> None:
-    runner.invoke(app, ["add", "A journey begins", "travel"])
+    add_result = runner.invoke(app, ["add", "A journey begins", "travel"])
+    assert add_result.exit_code == 0
     result = runner.invoke(app, ["categories"])
     assert result.exit_code == 0
     assert "travel" in result.stdout.splitlines()
