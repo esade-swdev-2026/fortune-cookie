@@ -18,6 +18,7 @@ and CI resolve the same ones. When you change a dependency in `pyproject.toml`, 
 ```
 uv run fortune-cookie get career --lucky-number 5
 uv run fortune-cookie count
+uv run fortune-cookie categories
 uv run fortune-cookie many 3
 uv run fortune-cookie add "Smile today" motivation
 uv run fortune-cookie last
@@ -60,6 +61,7 @@ All file I/O lives in `src/fortune_cookie/file_storage.py`. The `cli.py` module 
 |---|---|
 | `get <category>` | Shows a random fortune from that category, with your lucky numbers. `--lucky-number N` chooses how many numbers (1 to 49, default 6). |
 | `count` | Shows how many fortunes there are in total. |
+| `categories` | Lists every category you can pass to `get`, once each, in alphabetical order. |
 | `many <n>` | Shows `n` random fortunes at once, including the ones you added. |
 | `add "<text>" <category>` | Saves your own fortune in that category, so it can come up later. |
 | `last` | Shows the last fortune you got, or tells you none has been shown yet. |

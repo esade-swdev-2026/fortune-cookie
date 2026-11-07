@@ -40,6 +40,31 @@ def test_get_fortune_rejects_more_than_49_lucky_numbers() -> None:
     assert result.exit_code == 1
 
 
+def test_categories_lists_each_category_once_in_order() -> None:
+    result = runner.invoke(app, ["categories"])
+    assert result.exit_code == 0
+    assert result.stdout.splitlines() == ["career", "love", "motivation"]
+
+
+def test_categories_includes_categories_from_added_fortunes() -> None:
+    add_result = runner.invoke(app, ["add", "A journey begins", "travel"])
+    assert add_result.exit_code == 0
+    result = runner.invoke(app, ["categories"])
+    assert result.exit_code == 0
+    assert "travel" in result.stdout.splitlines()
+
+
+def test_categories_fails_on_corrupted_json(monkeypatch: pytest.MonkeyPatch) -> None:
+    def mock_load_custom_messages() -> list[dict[str, str]]:
+        raise ValueError("Invalid JSON format")
+
+    monkeypatch.setattr("fortune_cookie.cli.load_custom_messages", mock_load_custom_messages)
+
+    result = runner.invoke(app, ["categories"])
+    assert result.exit_code == 1
+    assert "Could not load categories: Invalid JSON format" in result.output
+
+
 def test_add_rejects_a_fortune_that_is_already_built_in() -> None:
     result = runner.invoke(app, ["add", "Believe in yourself", "motivation"])
     assert result.exit_code == 1
