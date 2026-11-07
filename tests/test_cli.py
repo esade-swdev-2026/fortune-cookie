@@ -63,3 +63,9 @@ def test_categories_fails_on_corrupted_json(monkeypatch: pytest.MonkeyPatch) -> 
     result = runner.invoke(app, ["categories"])
     assert result.exit_code == 1
     assert "Could not load categories: Invalid JSON format" in result.output
+
+
+def test_add_rejects_a_fortune_that_is_already_built_in() -> None:
+    result = runner.invoke(app, ["add", "Believe in yourself", "motivation"])
+    assert result.exit_code == 1
+    assert "already exists" in result.output

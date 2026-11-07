@@ -139,3 +139,21 @@ def test_get_many_returns_that_many_different_messages(messages: list[Fortune]) 
 def test_get_many_outside_the_available_range_raises(messages: list[Fortune], amount: int) -> None:
     with pytest.raises(ValueError):
         get_many(messages, amount)
+
+
+def test_add_message_rejects_a_fortune_that_already_exists() -> None:
+    messages = [Fortune(text="Believe in yourself", category="motivation")]
+    with pytest.raises(ValueError, match="already exists"):
+        add_message(messages, "Believe in yourself", "career")
+
+
+def test_add_message_ignores_surrounding_spaces_when_checking_duplicates() -> None:
+    messages = [Fortune(text="Believe in yourself", category="motivation")]
+    with pytest.raises(ValueError, match="already exists"):
+        add_message(messages, "  Believe in yourself  ", "motivation")
+
+
+def test_add_message_ignores_case_when_checking_duplicates() -> None:
+    messages = [Fortune(text="Believe in yourself", category="motivation")]
+    with pytest.raises(ValueError, match="already exists"):
+        add_message(messages, "believe in yourself", "motivation")
