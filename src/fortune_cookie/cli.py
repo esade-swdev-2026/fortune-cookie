@@ -86,8 +86,8 @@ def many(number_of_messages: int) -> None:
 def add(text: str, category: str) -> None:
     try:
         custom_messages = load_custom_messages()
-        updated_messages = add_message(custom_messages, text, category)
-        save_custom_messages(updated_messages)
+        all_messages = add_message(messages + custom_messages, text, category)
+        save_custom_messages(custom_messages + [all_messages[-1]])
     except ValueError as error:
         typer.echo(str(error), err=True)
         raise typer.Exit(code=1) from error
