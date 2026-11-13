@@ -4,9 +4,9 @@ from pathlib import Path
 
 from fortune_cookie.fortune_rules import Fortune
 
-history_file = Path.home() / ".fortune_cookie_history.json"
-last_message_file = Path.home() / ".fortune_cookie_last.txt"
-custom_messages_file = Path.home() / ".fortune_cookie_messages.json"
+history_file = Path.cwd() / ".fortune_cookie_history.json"
+last_message_file = Path.cwd() / ".fortune_cookie_last.txt"
+custom_messages_file = Path.cwd() / ".fortune_cookie_messages.json"
 
 
 def load_history() -> set[str]:
