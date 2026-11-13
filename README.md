@@ -65,3 +65,9 @@ All file I/O lives in `src/fortune_cookie/file_storage.py`. The `cli.py` module 
 | `many <n>` | Shows `n` random fortunes at once, including the ones you added. |
 | `add "<text>" <category>` | Saves your own fortune in that category, so it can come up later. |
 | `last` | Shows the last fortune you got, or tells you none has been shown yet. |
+## Run with Docker
+
+```bash
+docker build -t fortune-cookie .
+docker run --rm fortune-cookie --help
+docker run --rm -v cookie-data:/app fortune-cookie get motivation
