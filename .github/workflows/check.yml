@@ -45,7 +45,7 @@ jobs:
 
       - name: Tests
         run: uv run pytest
-- name: Build the image
+      - name: Build the image
         run: docker build -t fortune-cookie .
 
       - name: Run the image
