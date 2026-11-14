@@ -12,7 +12,7 @@ COPY README.md LICENSE ./
 COPY src ./src
 RUN uv sync --locked --no-dev
 
-RUN chown -R appuser /app
+RUN mkdir -p /app/data && chown -R appuser /app/data
 
 USER appuser
 

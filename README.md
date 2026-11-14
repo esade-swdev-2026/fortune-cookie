@@ -70,4 +70,4 @@ All file I/O lives in `src/fortune_cookie/file_storage.py`. The `cli.py` module 
 ```bash
 docker build -t fortune-cookie .
 docker run --rm fortune-cookie --help
-docker run --rm -v cookie-data:/app fortune-cookie get motivation
+docker run --rm -v cookie-data:/app/data fortune-cookie get motivation
