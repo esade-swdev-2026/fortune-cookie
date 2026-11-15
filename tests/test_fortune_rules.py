@@ -157,3 +157,12 @@ def test_add_message_ignores_case_when_checking_duplicates() -> None:
     messages = [Fortune(text="Believe in yourself", category="motivation")]
     with pytest.raises(ValueError, match="already exists"):
         add_message(messages, "believe in yourself", "motivation")
+
+
+def test_filter_ignores_case(messages: list[Fortune]) -> None:
+    assert filter_by_category(messages, "Career") == [CAREER, CAREER_2]
+
+
+def test_add_message_saves_the_category_in_lowercase() -> None:
+    result = add_message([], "Smile today", "Motivation")
+    assert result[-1].category == "motivation"
