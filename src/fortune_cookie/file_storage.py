@@ -5,7 +5,6 @@ from pathlib import Path
 from fortune_cookie.fortune_rules import Fortune
 
 data_dir = Path.cwd() / "data"
-data_dir.mkdir(exist_ok=True)
 
 history_file = data_dir / ".fortune_cookie_history.json"
 last_message_file = data_dir / ".fortune_cookie_last.txt"
@@ -23,6 +22,7 @@ def load_history() -> set[str]:
 
 
 def save_history(seen_messages: set[str]) -> None:
+    history_file.parent.mkdir(parents=True, exist_ok=True)
     with open(history_file, "w", encoding="utf-8") as file:
         json.dump(sorted(seen_messages), file)
 
@@ -35,10 +35,12 @@ def load_last_message() -> str | None:
 
 
 def save_last_message(message: str) -> None:
+    last_message_file.parent.mkdir(parents=True, exist_ok=True)
     last_message_file.write_text(message, encoding="utf-8")
 
 
 def save_custom_messages(custom_messages: list[Fortune]) -> None:
+    custom_messages_file.parent.mkdir(parents=True, exist_ok=True)
     saved_messages = [asdict(message) for message in custom_messages]
     custom_messages_file.write_text(
         json.dumps(saved_messages, indent=4),
