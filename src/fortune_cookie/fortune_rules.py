@@ -61,12 +61,14 @@ def lucky_numbers(number_of_lucky_numbers: int = DEFAULT_LUCKY_NUMBER_COUNT) -> 
 
 
 def filter_by_category(messages: list[Fortune], category: str) -> list[Fortune]:
-    available_categories = {message.category for message in messages}
+    wanted_category = category.strip().lower()
+    matching_messages = [
+        message for message in messages if message.category.lower() == wanted_category
+    ]
 
-    if category not in available_categories:
+    if not matching_messages:
         raise ValueError(f"Category '{category}' does not exist")
 
-    matching_messages = [message for message in messages if message.category == category]
     return matching_messages
 
 
@@ -80,7 +82,7 @@ def add_message(messages: list[Fortune], text: str, category: str) -> list[Fortu
     if any(message.text.lower() == text.strip().lower() for message in messages):
         raise ValueError("This fortune already exists")
 
-    new_message = Fortune(text=text.strip(), category=category.strip())
+    new_message = Fortune(text=text.strip(), category=category.strip().lower())
     return messages + [new_message]
 
 
