@@ -93,7 +93,7 @@ def add(text: str, category: str) -> None:
         typer.echo(str(error), err=True)
         raise typer.Exit(code=1) from error
 
-    typer.echo(f"Fortune added: {text}")
+    typer.echo(f"Fortune added: {all_messages[-1].text}")
 
 
 @app.command()

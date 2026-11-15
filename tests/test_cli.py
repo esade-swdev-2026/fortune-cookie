@@ -69,3 +69,9 @@ def test_add_rejects_a_fortune_that_is_already_built_in() -> None:
     result = runner.invoke(app, ["add", "Believe in yourself", "motivation"])
     assert result.exit_code == 1
     assert "already exists" in result.output
+
+
+def test_add_shows_the_cleaned_text() -> None:
+    result = runner.invoke(app, ["add", "  Smile today  ", "motivation"])
+    assert result.exit_code == 0
+    assert "Fortune added: Smile today\n" in result.output
