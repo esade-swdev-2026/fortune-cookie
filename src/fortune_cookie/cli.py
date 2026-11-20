@@ -65,7 +65,12 @@ def get(
 
 @app.command()
 def count() -> None:
-    all_messages = messages + load_custom_messages()
+    try:
+        all_messages = messages + load_custom_messages()
+    except ValueError as error:
+        typer.echo(f"Could not load fortunes: {error}", err=True)
+        raise typer.Exit(code=1) from error
+
     total_messages = count_messages(all_messages)
     typer.echo(f"Total fortunes: {total_messages}")
 
