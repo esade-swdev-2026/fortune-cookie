@@ -77,4 +77,13 @@ docker run --rm -v cookie-data:/app/data fortune-cookie get motivation
 docker run --rm -v cookie-data:/app/data fortune-cookie last
 ```
 
-Your fortunes, history and last fortune live in the named volume "cookie-data", outside the image. Each "docker run --rm" deletes its container, but the data survives: "count" shows 6 fortunes (5 built-in plus the one you added), and "last" shows the fortune that "get" just gave you. Running the "add" line a second time tells you the fortune already exists, because it is still saved in the volume.
+Your fortunes, history and last fortune live in the named volume `cookie-data`, outside the image. Each `docker run --rm` deletes its container, but the data survives: `count` shows 6 fortunes (5 built-in plus the one you added), and `last` shows the fortune that `get` just gave you. Running the `add` line a second time tells you the fortune already exists, because it is still saved in the volume.
+
+## Use of AI
+
+We all used Claude (Anthropic) as a helper, mostly to understand errors and check our work. AI never wrote to our repository: every commit, pull request and review was made by one of us, and every change passed the four checks and a review.
+
+- **Emma**: to understand Git steps and to plan and double-check her pull requests on case-insensitive categories (#13), the `add` message (#14), creating the data folder on save (#15) and the docs update (#17).
+- **Gina**: to understand strict mypy errors when turning on strict type checking (#1), to think of edge cases for the core tests (#2) and for `count`, `many` and `last` (#16), and to fix `--lucky-number` (#5).
+- **Mey**: to work out how to move the file I/O out of the CLI into `file_storage.py` (#3) and to add the `categories` command (#10).
+- **Mariam**: to write `list_categories` and its tests (#7) and to understand Docker errors while writing the Dockerfile (#12).
