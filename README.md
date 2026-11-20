@@ -26,7 +26,7 @@ uv run fortune-cookie last
 
 `--lucky-number` sets how many lucky numbers are printed (1 to 49, default 6).
 
-Data is saved in your home folder: `~/.fortune_cookie_history.json` (fortunes already shown), `~/.fortune_cookie_last.txt` (the last fortune) and `~/.fortune_cookie_messages.json` (fortunes you add).
+Data is saved in a `data` folder inside the folder you run the command from, created the first time something is saved: `data/.fortune_cookie_history.json` (fortunes already shown), `data/.fortune_cookie_last.txt` (the last fortune) and `data/.fortune_cookie_messages.json` (fortunes you add).
 
 ## Develop
 
@@ -65,9 +65,16 @@ All file I/O lives in `src/fortune_cookie/file_storage.py`. The `cli.py` module 
 | `many <n>` | Shows `n` random fortunes at once, including the ones you added. |
 | `add "<text>" <category>` | Saves your own fortune in that category, so it can come up later. |
 | `last` | Shows the last fortune you got, or tells you none has been shown yet. |
+
 ## Run with Docker
 
 ```bash
 docker build -t fortune-cookie .
 docker run --rm fortune-cookie --help
+docker run --rm -v cookie-data:/app/data fortune-cookie add "Smile today" motivation
+docker run --rm -v cookie-data:/app/data fortune-cookie count
 docker run --rm -v cookie-data:/app/data fortune-cookie get motivation
+docker run --rm -v cookie-data:/app/data fortune-cookie last
+```
+
+Your fortunes, history and last fortune live in the named volume "cookie-data", outside the image. Each "docker run --rm" deletes its container, but the data survives: "count" shows 6 fortunes (5 built-in plus the one you added), and "last" shows the fortune that "get" just gave you. Running the "add" line a second time tells you the fortune already exists, because it is still saved in the volume.
