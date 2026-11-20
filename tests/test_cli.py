@@ -127,3 +127,11 @@ def test_get_with_an_unknown_category_fails_with_a_message() -> None:
     result = runner.invoke(app, ["get", "health"])
     assert result.exit_code == 1
     assert "Category 'health' does not exist" in result.output
+
+
+def test_count_fails_cleanly_on_a_messages_file_with_the_wrong_shape() -> None:
+    file_storage.custom_messages_file.write_text('[{"message": "hi"}]', encoding="utf-8")
+    result = runner.invoke(app, ["count"])
+    assert result.exit_code == 1
+    assert "Could not load fortunes" in result.output
+    assert "Traceback" not in result.output
