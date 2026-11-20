@@ -75,3 +75,63 @@ def test_add_shows_the_cleaned_text() -> None:
     result = runner.invoke(app, ["add", "  Smile today  ", "motivation"])
     assert result.exit_code == 0
     assert "Fortune added: Smile today\n" in result.output
+
+
+def test_count_shows_the_built_in_fortunes() -> None:
+    result = runner.invoke(app, ["count"])
+    assert result.exit_code == 0
+    assert result.stdout == "Total fortunes: 5\n"
+
+
+def test_count_includes_added_fortunes() -> None:
+    runner.invoke(app, ["add", "Smile today", "motivation"])
+    result = runner.invoke(app, ["count"])
+    assert result.stdout == "Total fortunes: 6\n"
+
+
+def test_count_fails_cleanly_on_a_corrupted_messages_file() -> None:
+    file_storage.custom_messages_file.write_text("{bad", encoding="utf-8")
+    result = runner.invoke(app, ["count"])
+    assert result.exit_code == 1
+    assert "Could not load fortunes" in result.output
+    assert "Traceback" not in result.output
+
+
+def test_many_prints_the_requested_number_of_fortunes() -> None:
+    result = runner.invoke(app, ["many", "3"])
+    assert result.exit_code == 0
+    assert len(result.stdout.splitlines()) == 3
+
+
+@pytest.mark.parametrize("amount", ["0", "6"])
+def test_many_rejects_an_amount_outside_the_available_range(amount: str) -> None:
+    result = runner.invoke(app, ["many", amount])
+    assert result.exit_code == 1
+    assert "between 1 and the total available" in result.output
+
+
+def test_last_says_so_when_no_fortune_was_shown_yet() -> None:
+    result = runner.invoke(app, ["last"])
+    assert result.exit_code == 0
+    assert "No fortune has been displayed yet." in result.output
+
+
+def test_last_shows_the_fortune_that_get_displayed() -> None:
+    get_result = runner.invoke(app, ["get", "love"])
+    assert get_result.exit_code == 0
+    result = runner.invoke(app, ["last"])
+    assert "Your last fortune: Love is coming" in result.output
+
+
+def test_get_with_an_unknown_category_fails_with_a_message() -> None:
+    result = runner.invoke(app, ["get", "health"])
+    assert result.exit_code == 1
+    assert "Category 'health' does not exist" in result.output
+
+
+def test_count_fails_cleanly_on_a_messages_file_with_the_wrong_shape() -> None:
+    file_storage.custom_messages_file.write_text('[{"message": "hi"}]', encoding="utf-8")
+    result = runner.invoke(app, ["count"])
+    assert result.exit_code == 1
+    assert "Could not load fortunes" in result.output
+    assert "Traceback" not in result.output
