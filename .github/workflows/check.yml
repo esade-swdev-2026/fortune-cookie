@@ -51,7 +51,6 @@ jobs:
       - name: Run the image
         run: docker run --rm fortune-cookie --help
 
-  # Publishes the image to GHCR. Never runs for a pull request, never runs if check is red.
   release:
     needs: check
     if: >-
@@ -66,32 +65,33 @@ jobs:
       - name: Check out the code
         uses: actions/checkout@v7
 
-      - name: Work out the image name and tags
+      - name: Name the image
         run: |
           echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
-          echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+          echo "SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
 
       - name: Log in to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
       - name: Build the image
-        run: >-
-          docker build
-          --label "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}"
-          -t "$IMAGE:$SHORT_SHA" .
+        run: docker build --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" -t "$IMAGE:$SHA" .
 
-      - name: Push the commit tag
-        run: docker push "$IMAGE:$SHORT_SHA"
+      - name: Push it, tagged with the commit
+        run: docker push "$IMAGE:$SHA"
 
-      - name: Push the version tag
-        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Push it, tagged with the version
+        if: github.ref_type == 'tag'
         run: |
-          docker tag "$IMAGE:$SHORT_SHA" "$IMAGE:$GITHUB_REF_NAME"
+          docker tag "$IMAGE:$SHA" "$IMAGE:$GITHUB_REF_NAME"
           docker push "$IMAGE:$GITHUB_REF_NAME"
 
-      - name: Pull the published image back and run it
+      - name: Pull it back and run it
         run: |
-          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then TAG="$GITHUB_REF_NAME"; else TAG="$SHORT_SHA"; fi
-          docker image rm "$IMAGE:$SHORT_SHA" "$IMAGE:$TAG" || true
-          docker pull "$IMAGE:$TAG"
-          docker run --rm "$IMAGE:$TAG" --help
+          docker image rm "$IMAGE:$SHA"
+          published="$IMAGE:$SHA"
+          if [ "$GITHUB_REF_TYPE" = tag ]; then
+            docker image rm "$IMAGE:$GITHUB_REF_NAME"
+            published="$IMAGE:$GITHUB_REF_NAME"
+          fi
+          docker pull "$published"
+          docker run --rm "$published" --help
