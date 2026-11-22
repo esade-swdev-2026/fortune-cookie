@@ -67,7 +67,7 @@ def get(
 def count() -> None:
     try:
         all_messages = messages + load_custom_messages()
-    except (ValueError, TypeError) as error:
+    except ValueError as error:
         typer.echo(f"Could not load fortunes: {error}", err=True)
         raise typer.Exit(code=1) from error
 

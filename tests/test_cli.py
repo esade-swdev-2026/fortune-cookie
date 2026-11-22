@@ -135,3 +135,15 @@ def test_count_fails_cleanly_on_a_messages_file_with_the_wrong_shape() -> None:
     assert result.exit_code == 1
     assert "Could not load fortunes" in result.output
     assert "Traceback" not in result.output
+
+
+@pytest.mark.parametrize(
+    "command",
+    [["get", "career"], ["many", "2"], ["categories"], ["add", "Smile today", "motivation"]],
+)
+def test_commands_fail_cleanly_on_a_messages_file_with_the_wrong_shape(command: list[str]) -> None:
+    file_storage.custom_messages_file.write_text('[{"message": "hi"}]', encoding="utf-8")
+    result = runner.invoke(app, command)
+    assert result.exit_code == 1
+    assert "wrong format" in result.output
+    assert "Traceback" not in result.output

@@ -53,4 +53,7 @@ def load_custom_messages() -> list[Fortune]:
         return []
 
     saved_messages = json.loads(custom_messages_file.read_text(encoding="utf-8"))
-    return [Fortune(**message) for message in saved_messages]
+    try:
+        return [Fortune(**message) for message in saved_messages]
+    except TypeError as error:
+        raise ValueError(f"{custom_messages_file.name} has the wrong format") from error
